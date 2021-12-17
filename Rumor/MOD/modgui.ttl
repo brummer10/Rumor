@@ -1,0 +1,26 @@
+@prefix modgui: <http://moddevices.com/ns/modgui#> .
+@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
+
+<https://github.com/brummer10/Rumor>
+    modgui:gui [
+        modgui:resourcesDirectory <modgui> ;
+        modgui:iconTemplate <modgui/icon-rumor.html> ;
+        modgui:stylesheet <modgui/stylesheet-rumor.css> ;
+        modgui:screenshot <modgui/screenshot-rumor.png> ;
+        modgui:thumbnail <modgui/thumbnail-rumor.png> ;
+        modgui:brand "brummer" ;
+        modgui:label "Rumor" ;
+        modgui:model "boxy" ;
+        modgui:panel "2-knobs" ;
+        modgui:color "black" ;
+        modgui:knob "black" ;
+        modgui:port [
+            lv2:index 0 ;
+            lv2:symbol "Knob2" ;
+            lv2:name "volume" ;
+        ] , [
+            lv2:index 1 ;
+            lv2:symbol "Knob1" ;
+            lv2:name "intensity" ;
+        ] ;
+    ] .
