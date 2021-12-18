@@ -1,0 +1,5 @@
+*.a
+*.o
+*.lv2
+*.so
+Rumor/xresources.h

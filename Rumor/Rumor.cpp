@@ -7,10 +7,12 @@
 
 #include <lv2.h>
 
+#ifndef  __MOD_DEVICES__
 #include "resampler.cc"
 #include "resampler-table.cc"
 #include "zita-resampler/resampler.h"
 #include "gx_resampler.cc"
+#endif
 #include "rumor.cc"
 ///////////////////////// MACRO SUPPORT ////////////////////////////////
 

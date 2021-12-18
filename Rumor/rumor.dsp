@@ -180,6 +180,6 @@ rumorclip = ffunction(float rumorclip(float), "rumor_table.h", "");
 
 ts9 = _ <: _ - rumorclip(p1-_) :> _;
 
-process = _ :  + ~ ts9 : + ~  (rumorclip : *(0.666)) :  *(Volume) with {
+process = ts9 : + ~  (*(0.666) : rumorclip : fi.allpassn(4,(-0.2, 0.3, 0.4, 0.5))) :  *(Volume) with {
     Volume = hslider("level[name:Volume]", 0.5, 0, 1, 0.01) : si.smooth(0.993);
 };
