@@ -1,6 +1,7 @@
 # Rumor.lv2
 The Rumor is pure, nasty growling bass fuzz pedal, with bold out-front presence, and cutting articulation. 
 
+![Rumor](https://github.com/brummer10/Rumor/blob/main/Rumor.png?raw=true)
 
 ## Features
 
