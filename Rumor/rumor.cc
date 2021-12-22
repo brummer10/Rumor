@@ -34,7 +34,7 @@ namespace rumor {
 
 class Dsp {
 private:
-#ifndef  __MOD_DEVICES__
+#ifndef _MOD_DEVICE_DUO
 	gx_resample::FixedRateResampler smp;
 	uint32_t sample_rate;
 #endif
@@ -60,7 +60,7 @@ private:
 	FAUSTFLOAT	*fHslider0_;
 	float fRec11[2];
 
-#ifndef  __MOD_DEVICES__
+#ifndef _MOD_DEVICE_DUO
 	double lowpass_fVec0[2];
 	double lowpass_fRec1[2];
 	double lowpass_fRec0[3];
@@ -93,7 +93,7 @@ inline void Dsp::clear_state_f()
 	for (int l5 = 0; (l5 < 3); l5 = (l5 + 1)) fRec9[l5] = 0.0f;
 	for (int l6 = 0; (l6 < 2); l6 = (l6 + 1)) fRec0[l6] = 0.0f;
 	for (int l7 = 0; (l7 < 2); l7 = (l7 + 1)) fRec11[l7] = 0.0f;
-#ifndef  __MOD_DEVICES__
+#ifndef _MOD_DEVICE_DUO
 	for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) lowpass_fVec0[l0] = 0.0;
 	for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) lowpass_fRec1[l1] = 0.0;
 	for (int l2 = 0; (l2 < 3); l2 = (l2 + 1)) lowpass_fRec0[l2] = 0.0;
@@ -102,7 +102,7 @@ inline void Dsp::clear_state_f()
 
 inline void Dsp::init(uint32_t RsamplingFreq)
 {
-#ifndef  __MOD_DEVICES__
+#ifndef _MOD_DEVICE_DUO
 	sample_rate = 96000;
 	smp.setup(RsamplingFreq, sample_rate);
 	fSampleRate = sample_rate;
@@ -126,7 +126,7 @@ void always_inline Dsp::compute(int count, FAUSTFLOAT *input0, FAUSTFLOAT *outpu
 {
 #define fVslider0 (*fVslider0_)
 #define fHslider0 (*fHslider0_)
-#ifndef  __MOD_DEVICES__
+#ifndef _MOD_DEVICE_DUO
 	FAUSTFLOAT buf[smp.max_out_count(count)];
 	int ReCount = smp.up(count, input0, buf);
 #else
@@ -168,7 +168,7 @@ void always_inline Dsp::compute(int count, FAUSTFLOAT *input0, FAUSTFLOAT *outpu
 		fRec0[1] = fRec0[0];
 		fRec11[1] = fRec11[0];
 	}
-#ifndef  __MOD_DEVICES__
+#ifndef _MOD_DEVICE_DUO
 	for (int i0 = 0; (i0 < ReCount); i0 = (i0 + 1)) {
 		double lowpass_fTemp0 = double(buf[i0]);
 		lowpass_fVec0[0] = lowpass_fTemp0;

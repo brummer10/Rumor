@@ -7,7 +7,7 @@
 
 #include <lv2.h>
 
-#ifndef  __MOD_DEVICES__
+#ifndef  _MOD_DEVICE_DUO
 #include "resampler.cc"
 #include "resampler-table.cc"
 #include "zita-resampler/resampler.h"
@@ -37,10 +37,6 @@ private:
     float* output0;
     float* bypass;
     float bypass_;
-    float* intensity;
-    float intensity_;
-    float* volume;
-    float volume_;
     rumor::Dsp* dsp;
     // bypass ramping
     bool needs_ramp_down;
@@ -82,8 +78,6 @@ Xrumor::Xrumor() :
     output0(NULL),
     bypass(NULL),
     bypass_(2),
-    intensity(NULL),
-    volume(NULL),
     dsp(rumor::plugin()),
     needs_ramp_down(false),
     needs_ramp_up(false),
@@ -120,12 +114,6 @@ void Xrumor::connect_(uint32_t port,void* data)
         case 2:
             bypass = static_cast<float*>(data);
             break;
-        case 3:
-            intensity = static_cast<float*>(data);
-            break;
-        case 4:
-            volume = static_cast<float*>(data);
-            break;
         default:
             break;
     }
@@ -149,10 +137,6 @@ void Xrumor::deactivate_f()
 void Xrumor::run_dsp_(uint32_t n_samples)
 {
     if(n_samples<1) return;
-
-    // get controller values
-#define  intensity_ (*(intensity))
-#define  volume_ (*(volume))
 
     // do inplace processing on default
     if(output0 != input0)
@@ -194,6 +178,7 @@ void Xrumor::run_dsp_(uint32_t n_samples)
             bypassed = true;
             ramp_down = ramp_down_step;
             ramp_up = 0.0;
+            dsp->clear_state_f();
         } else {
             ramp_up = ramp_down;
         }
@@ -214,8 +199,6 @@ void Xrumor::run_dsp_(uint32_t n_samples)
             ramp_down = ramp_up;
         }
     }
-#undef  intensity_
-#undef  volume_
 }
 
 void Xrumor::connect_all__ports(uint32_t port, void* data)
