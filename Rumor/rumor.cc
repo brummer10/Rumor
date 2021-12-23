@@ -39,26 +39,27 @@ private:
 	uint32_t sample_rate;
 #endif
 	uint32_t fSampleRate;
-	float fRec7[2];
-	float fRec5[2];
-	float fRec3[2];
-	float fRec1[2];
-	float fConst0;
-	float fConst1;
-	float fConst2;
-	float fConst3;
+	double fVec0[3];
+	double fRec7[2];
+	double fRec5[2];
+	double fRec3[2];
+	double fRec1[2];
+	double fConst0;
+	double fConst1;
 	FAUSTFLOAT fVslider0;
 	FAUSTFLOAT	*fVslider0_;
-	float fRec10[2];
-	float fConst5;
-	float fConst7;
-	float fConst8;
-	float fConst9;
-	float fRec9[3];
-	float fRec0[2];
+	double fRec10[2];
+	double fConst3;
+	double fConst5;
+	double fConst6;
+	double fConst7;
+	double fConst8;
+	double fConst9;
+	double fRec9[3];
+	double fRec0[2];
 	FAUSTFLOAT fHslider0;
 	FAUSTFLOAT	*fHslider0_;
-	float fRec11[2];
+	double fRec11[2];
 
 #ifndef _MOD_DEVICE_DUO
 	double lowpass_fVec0[2];
@@ -85,14 +86,15 @@ Dsp::~Dsp() {
 
 inline void Dsp::clear_state_f()
 {
-	for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) fRec7[l0] = 0.0f;
-	for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) fRec5[l1] = 0.0f;
-	for (int l2 = 0; (l2 < 2); l2 = (l2 + 1)) fRec3[l2] = 0.0f;
-	for (int l3 = 0; (l3 < 2); l3 = (l3 + 1)) fRec1[l3] = 0.0f;
-	for (int l4 = 0; (l4 < 2); l4 = (l4 + 1)) fRec10[l4] = 0.0f;
-	for (int l5 = 0; (l5 < 3); l5 = (l5 + 1)) fRec9[l5] = 0.0f;
-	for (int l6 = 0; (l6 < 2); l6 = (l6 + 1)) fRec0[l6] = 0.0f;
-	for (int l7 = 0; (l7 < 2); l7 = (l7 + 1)) fRec11[l7] = 0.0f;
+	for (int l0 = 0; (l0 < 3); l0 = (l0 + 1)) fVec0[l0] = 0.0;
+	for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) fRec7[l1] = 0.0;
+	for (int l2 = 0; (l2 < 2); l2 = (l2 + 1)) fRec5[l2] = 0.0;
+	for (int l3 = 0; (l3 < 2); l3 = (l3 + 1)) fRec3[l3] = 0.0;
+	for (int l4 = 0; (l4 < 2); l4 = (l4 + 1)) fRec1[l4] = 0.0;
+	for (int l5 = 0; (l5 < 2); l5 = (l5 + 1)) fRec10[l5] = 0.0;
+	for (int l6 = 0; (l6 < 3); l6 = (l6 + 1)) fRec9[l6] = 0.0;
+	for (int l7 = 0; (l7 < 2); l7 = (l7 + 1)) fRec0[l7] = 0.0;
+	for (int l8 = 0; (l8 < 2); l8 = (l8 + 1)) fRec11[l8] = 0.0;
 #ifndef _MOD_DEVICE_DUO
 	for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) lowpass_fVec0[l0] = 0.0;
 	for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) lowpass_fRec1[l1] = 0.0;
@@ -109,16 +111,16 @@ inline void Dsp::init(uint32_t RsamplingFreq)
 #else
 	fSampleRate = RsamplingFreq;
 #endif
-	fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSampleRate)));
-	fConst1 = (3.68740366e-05f * fConst0);
-	fConst2 = (0.0f - fConst1);
-	fConst3 = mydsp_faustpower2_f(fConst0);
-	float fConst4 = (2.50211268e-10f * fConst0);
-	fConst5 = (fConst4 + -1.41841355e-07f);
-	float fConst6 = (3.23341159e-10f * fConst0);
-	fConst7 = (fConst6 + -1.83849806e-06f);
-	fConst8 = (fConst4 + 1.41841355e-07f);
-	fConst9 = (fConst6 + 1.83849806e-06f);
+	fConst0 = std::min<double>(192000.0, std::max<double>(1.0, double(fSampleRate)));
+	fConst1 = mydsp_faustpower2_f(fConst0);
+	double fConst2 = (2.50211256782905e-10 * fConst0);
+	fConst3 = (fConst2 + -1.41841347670627e-07);
+	double fConst4 = (3.2334114663882602e-10 * fConst0);
+	fConst5 = (fConst4 + -1.8384980771754499e-06);
+	fConst6 = (3.68740380275009e-05 * fConst0);
+	fConst7 = (0.0 - fConst6);
+	fConst8 = (fConst2 + 1.41841347670627e-07);
+	fConst9 = (fConst4 + 1.8384980771754499e-06);
 	clear_state_f();
 }
 
@@ -135,29 +137,31 @@ void always_inline Dsp::compute(int count, FAUSTFLOAT *input0, FAUSTFLOAT *outpu
 	float* buf = output0;
 	int ReCount = count;
 #endif
-	float fSlow0 = (0.000366769877f * (std::exp((3.0f * (1.0f - float(fVslider0)))) + -1.0f));
-	float fSlow1 = (0.00700000022f * float(fHslider0));
+	double fSlow0 = (0.00036676987543879196 * (std::exp((3.0 * (1.0 - double(fVslider0)))) + -1.0));
+	double fSlow1 = (0.0070000000000000062 * double(fHslider0));
 	for (int i0 = 0; (i0 < ReCount); i0 = (i0 + 1)) {
-		float fTemp0 = float(buf[i0]);
-		float fTemp1 = float(rumorclip(float((0.666000009f * fRec0[1]))));
-		float fTemp2 = (0.5f * fRec1[1]);
-		float fTemp3 = (0.400000006f * fRec3[1]);
-		float fTemp4 = (fTemp2 + ((0.300000012f * fRec5[1]) + fTemp3));
-		float fTemp5 = (((0.200000003f * fRec7[1]) + fTemp1) - fTemp4);
+		double fTemp0 = double(buf[i0]);
+		fVec0[0] = fTemp0;
+		double fTemp1 = double(rumorclip(double((0.66600000000000004 * fRec0[1]))));
+		double fTemp2 = (0.5 * fRec1[1]);
+		double fTemp3 = (0.40000000000000002 * fRec3[1]);
+		double fTemp4 = (fTemp2 + ((0.29999999999999999 * fRec5[1]) + fTemp3));
+		double fTemp5 = (((0.20000000000000001 * fRec7[1]) + fTemp1) - fTemp4);
 		fRec7[0] = fTemp5;
-		float fRec8 = (0.0f - (0.200000003f * fTemp5));
+		double fRec8 = (0.0 - (0.20000000000000001 * fTemp5));
 		fRec5[0] = (fRec8 + fRec7[1]);
-		float fRec6 = (0.300000012f * (fTemp1 - fTemp4));
+		double fRec6 = (0.29999999999999999 * (fTemp1 - fTemp4));
 		fRec3[0] = (fRec6 + fRec5[1]);
-		float fRec4 = (0.400000006f * (fTemp1 - (fTemp3 + fTemp2)));
+		double fRec4 = (0.40000000000000002 * (fTemp1 - (fTemp3 + fTemp2)));
 		fRec1[0] = (fRec4 + fRec3[1]);
-		float fRec2 = (0.5f * (fTemp1 - fTemp2));
-		fRec10[0] = (fSlow0 + (0.992999971f * fRec10[1]));
-		float fTemp6 = ((fConst0 * (fConst8 + (fConst9 * fRec10[0]))) + 9.19249069e-05f);
-		fRec9[0] = (fTemp0 - (((fRec9[1] * ((fConst3 * ((0.0f - (6.46682319e-10f * fRec10[0])) + -5.00422537e-10f)) + 0.000183849814f)) + (fRec9[2] * ((fConst0 * (fConst5 + (fConst7 * fRec10[0]))) + 9.19249069e-05f))) / fTemp6));
-		fRec0[0] = ((fTemp0 + (fRec2 + fRec1[1])) - float(rumorclip(float((((((fConst2 * fRec9[0]) + (6.87403781e-06f * fRec9[1])) + (fConst1 * fRec9[2])) / fTemp6) - fTemp0)))));
-		fRec11[0] = (fSlow1 + (0.992999971f * fRec11[1]));
+		double fRec2 = (0.5 * (fTemp1 - fTemp2));
+		fRec10[0] = (fSlow0 + (0.99299999999999999 * fRec10[1]));
+		fRec9[0] = (0.0 - ((((fRec9[1] * ((fConst1 * ((0.0 - (6.4668229327765205e-10 * fRec10[0])) + -5.0042251356581001e-10)) + 0.00018384980771754501)) + (fRec9[2] * ((fConst0 * (fConst3 + (fConst5 * fRec10[0]))) + 9.1924903858772505e-05))) - (((6.8740380275009003e-06 * fVec0[1]) + (fConst6 * fVec0[2])) + (fConst7 * fTemp0))) / ((fConst0 * (fConst8 + (fConst9 * fRec10[0]))) + 9.1924903858772505e-05)));
+		fRec0[0] = ((fTemp0 + (fRec2 + fRec1[1])) - double(rumorclip(double((fRec9[0] - fTemp0)))));
+		fRec11[0] = (fSlow1 + (0.99299999999999999 * fRec11[1]));
 		buf[i0] = FAUSTFLOAT((fRec0[0] * fRec11[0]));
+		fVec0[2] = fVec0[1];
+		fVec0[1] = fVec0[0];
 		fRec7[1] = fRec7[0];
 		fRec5[1] = fRec5[0];
 		fRec3[1] = fRec3[0];
@@ -193,10 +197,10 @@ void Dsp::connect(uint32_t port,void* data)
 	switch ((PortIndex)port)
 	{
 	case INTENSITY: 
-		fVslider0_ = static_cast<float*>(data); // , 0.5f, 0.0f, 1.0f, 0.00999999978f 
+		fVslider0_ = static_cast<float*>(data); // , 0.5, 0.0, 1.0, 0.01 
 		break;
 	case LEVEL: 
-		fHslider0_ = static_cast<float*>(data); // , 0.5f, 0.0f, 1.0f, 0.00999999978f 
+		fHslider0_ = static_cast<float*>(data); // , 0.5, 0.0, 1.0, 0.01 
 		break;
 	default:
 		break;
