@@ -133,7 +133,7 @@ void always_inline Dsp::compute(int count, FAUSTFLOAT *input0, FAUSTFLOAT *outpu
 	int ReCount = smp.up(count, input0, buf);
 #else
 	if(output0 != input0)
-		memcpy(output0, input0, n_samples*sizeof(float));
+		memcpy(output0, input0, count*sizeof(float));
 	float* buf = output0;
 	int ReCount = count;
 #endif
