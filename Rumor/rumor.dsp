@@ -13,6 +13,7 @@ declare name "rumor";
 declare category "Extern";
 declare shortname "rumor";
 declare description "rumor";
+declare samplerate "96000";
 
 import("stdfaust.lib");
 
@@ -175,11 +176,15 @@ p2 = pre : fi.iir((b0/a0,b1/a0,b2/a0,b3/a0),(a1/a0,a2/a0,a3/a0)) with {
 
     a3 = Volume*(Volume*fs*(fs*(3.96263655940387e-15*fs - 2.5024049214879e-12) + 2.91165940049241e-9) + fs*(fs*(-3.96184403209199e-15*fs + 2.58115717169168e-12) - 2.94122192432324e-9) + 2.91165940049241e-8) + fs*(fs*(-7.92765070074338e-15*fs + 5.16483259885109e-12) - 5.88536153701812e-9) + 5.82390113286491e-8;
 };
-    
+
+anti_denormal = pow(10,-20);
+
+anti_denormal_ac = 1 - 1' : *(anti_denormal) : + ~ *(-1);
+
 rumorclip = ffunction(float rumorclip(float), "rumor_table.h", "");
 
 ts9 = _ <: _ - rumorclip(p1-_) :> _;
 
-process = ts9 : + ~  (*(0.666) : rumorclip : fi.allpassn(4,(-0.2, 0.3, 0.4, 0.5))) :  *(Volume) with {
+process = +(anti_denormal_ac) : ts9 : + ~  (*(0.666) : rumorclip : fi.allpassn(4,(-0.2, 0.3, 0.4, 0.5))) :  *(Volume) with {
     Volume = hslider("level[name:Volume]", 0.5, 0, 1, 0.01) : si.smooth(0.993);
 };

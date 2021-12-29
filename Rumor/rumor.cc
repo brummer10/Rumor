@@ -39,33 +39,36 @@ private:
 	uint32_t sample_rate;
 #endif
 	uint32_t fSampleRate;
-	double fVec0[3];
+	int iVec0[2];
 	double fRec7[2];
 	double fRec5[2];
 	double fRec3[2];
 	double fRec1[2];
+	double fRec9[2];
 	double fConst0;
 	double fConst1;
 	FAUSTFLOAT fVslider0;
 	FAUSTFLOAT	*fVslider0_;
-	double fRec10[2];
+	double fRec11[2];
 	double fConst3;
 	double fConst5;
+	double fVec1[3];
 	double fConst6;
 	double fConst7;
 	double fConst8;
 	double fConst9;
-	double fRec9[3];
+	double fRec10[3];
 	double fRec0[2];
 	FAUSTFLOAT fHslider0;
 	FAUSTFLOAT	*fHslider0_;
-	double fRec11[2];
+	double fRec12[2];
 
 #ifndef _MOD_DEVICE_DUO
 	double lowpass_fVec0[2];
 	double lowpass_fRec1[2];
 	double lowpass_fRec0[3];
 #endif
+
 public:
 	void connect(uint32_t port,void* data);
 	void del_instance(Dsp *p);
@@ -86,15 +89,17 @@ Dsp::~Dsp() {
 
 inline void Dsp::clear_state_f()
 {
-	for (int l0 = 0; (l0 < 3); l0 = (l0 + 1)) fVec0[l0] = 0.0;
+	for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) iVec0[l0] = 0;
 	for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) fRec7[l1] = 0.0;
 	for (int l2 = 0; (l2 < 2); l2 = (l2 + 1)) fRec5[l2] = 0.0;
 	for (int l3 = 0; (l3 < 2); l3 = (l3 + 1)) fRec3[l3] = 0.0;
 	for (int l4 = 0; (l4 < 2); l4 = (l4 + 1)) fRec1[l4] = 0.0;
-	for (int l5 = 0; (l5 < 2); l5 = (l5 + 1)) fRec10[l5] = 0.0;
-	for (int l6 = 0; (l6 < 3); l6 = (l6 + 1)) fRec9[l6] = 0.0;
-	for (int l7 = 0; (l7 < 2); l7 = (l7 + 1)) fRec0[l7] = 0.0;
-	for (int l8 = 0; (l8 < 2); l8 = (l8 + 1)) fRec11[l8] = 0.0;
+	for (int l5 = 0; (l5 < 2); l5 = (l5 + 1)) fRec9[l5] = 0.0;
+	for (int l6 = 0; (l6 < 2); l6 = (l6 + 1)) fRec11[l6] = 0.0;
+	for (int l7 = 0; (l7 < 3); l7 = (l7 + 1)) fVec1[l7] = 0.0;
+	for (int l8 = 0; (l8 < 3); l8 = (l8 + 1)) fRec10[l8] = 0.0;
+	for (int l9 = 0; (l9 < 2); l9 = (l9 + 1)) fRec0[l9] = 0.0;
+	for (int l10 = 0; (l10 < 2); l10 = (l10 + 1)) fRec12[l10] = 0.0;
 #ifndef _MOD_DEVICE_DUO
 	for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) lowpass_fVec0[l0] = 0.0;
 	for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) lowpass_fRec1[l1] = 0.0;
@@ -141,7 +146,7 @@ void always_inline Dsp::compute(int count, FAUSTFLOAT *input0, FAUSTFLOAT *outpu
 	double fSlow1 = (0.0070000000000000062 * double(fHslider0));
 	for (int i0 = 0; (i0 < ReCount); i0 = (i0 + 1)) {
 		double fTemp0 = double(buf[i0]);
-		fVec0[0] = fTemp0;
+		iVec0[0] = 1;
 		double fTemp1 = double(rumorclip(double((0.66600000000000004 * fRec0[1]))));
 		double fTemp2 = (0.5 * fRec1[1]);
 		double fTemp3 = (0.40000000000000002 * fRec3[1]);
@@ -155,22 +160,27 @@ void always_inline Dsp::compute(int count, FAUSTFLOAT *input0, FAUSTFLOAT *outpu
 		double fRec4 = (0.40000000000000002 * (fTemp1 - (fTemp3 + fTemp2)));
 		fRec1[0] = (fRec4 + fRec3[1]);
 		double fRec2 = (0.5 * (fTemp1 - fTemp2));
-		fRec10[0] = (fSlow0 + (0.99299999999999999 * fRec10[1]));
-		fRec9[0] = (0.0 - ((((fRec9[1] * ((fConst1 * ((0.0 - (6.4668229327765205e-10 * fRec10[0])) + -5.0042251356581001e-10)) + 0.00018384980771754501)) + (fRec9[2] * ((fConst0 * (fConst3 + (fConst5 * fRec10[0]))) + 9.1924903858772505e-05))) - (((6.8740380275009003e-06 * fVec0[1]) + (fConst6 * fVec0[2])) + (fConst7 * fTemp0))) / ((fConst0 * (fConst8 + (fConst9 * fRec10[0]))) + 9.1924903858772505e-05)));
-		fRec0[0] = ((fTemp0 + (fRec2 + fRec1[1])) - double(rumorclip(double((fRec9[0] - fTemp0)))));
-		fRec11[0] = (fSlow1 + (0.99299999999999999 * fRec11[1]));
-		buf[i0] = FAUSTFLOAT((fRec0[0] * fRec11[0]));
-		fVec0[2] = fVec0[1];
-		fVec0[1] = fVec0[0];
+		fRec9[0] = ((9.9999999999999995e-21 * double((1 - iVec0[1]))) - fRec9[1]);
+		fRec11[0] = (fSlow0 + (0.99299999999999999 * fRec11[1]));
+		double fTemp6 = (fTemp0 + fRec9[0]);
+		fVec1[0] = fTemp6;
+		fRec10[0] = (0.0 - ((((fRec10[1] * ((fConst1 * ((0.0 - (6.4668229327765205e-10 * fRec11[0])) + -5.0042251356581001e-10)) + 0.00018384980771754501)) + (fRec10[2] * ((fConst0 * (fConst3 + (fConst5 * fRec11[0]))) + 9.1924903858772505e-05))) - (((6.8740380275009003e-06 * fVec1[1]) + (fConst6 * fVec1[2])) + (fConst7 * fTemp6))) / ((fConst0 * (fConst8 + (fConst9 * fRec11[0]))) + 9.1924903858772505e-05)));
+		fRec0[0] = ((fTemp0 + (fRec1[1] + (fRec2 + fRec9[0]))) - double(rumorclip(double((fRec10[0] - fTemp6)))));
+		fRec12[0] = (fSlow1 + (0.99299999999999999 * fRec12[1]));
+		buf[i0] = FAUSTFLOAT((fRec0[0] * fRec12[0]));
+		iVec0[1] = iVec0[0];
 		fRec7[1] = fRec7[0];
 		fRec5[1] = fRec5[0];
 		fRec3[1] = fRec3[0];
 		fRec1[1] = fRec1[0];
-		fRec10[1] = fRec10[0];
-		fRec9[2] = fRec9[1];
 		fRec9[1] = fRec9[0];
-		fRec0[1] = fRec0[0];
 		fRec11[1] = fRec11[0];
+		fVec1[2] = fVec1[1];
+		fVec1[1] = fVec1[0];
+		fRec10[2] = fRec10[1];
+		fRec10[1] = fRec10[0];
+		fRec0[1] = fRec0[0];
+		fRec12[1] = fRec12[0];
 	}
 #ifndef _MOD_DEVICE_DUO
 	for (int i0 = 0; (i0 < ReCount); i0 = (i0 + 1)) {
