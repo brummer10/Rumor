@@ -64,8 +64,7 @@ private:
 	double fRec12[2];
 
 #ifndef _MOD_DEVICE_DUO
-	double lowpass_fVec0[2];
-	double lowpass_fRec1[2];
+	double lowpass_fRec1[3];
 	double lowpass_fRec0[3];
 #endif
 
@@ -73,6 +72,7 @@ public:
 	void connect(uint32_t port,void* data);
 	void del_instance(Dsp *p);
 	void clear_state_f();
+	void print_out();
 	void init(uint32_t sample_rate);
 	void compute(int count, FAUSTFLOAT *input0, FAUSTFLOAT *output0);
 	Dsp();
@@ -87,8 +87,28 @@ Dsp::Dsp() {
 Dsp::~Dsp() {
 }
 
+inline void Dsp::print_out()
+{
+	for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) fprintf(stderr, " iVec0 %i , ", iVec0[l0]);
+	for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) fprintf(stderr, " fRec7 %f , ", fRec7[l1]);
+	for (int l2 = 0; (l2 < 2); l2 = (l2 + 1)) fprintf(stderr, " fRec5 %f , ", fRec5[l2]);
+	for (int l3 = 0; (l3 < 2); l3 = (l3 + 1)) fprintf(stderr, " fRec3 %f , ", fRec3[l3]);
+	for (int l4 = 0; (l4 < 2); l4 = (l4 + 1)) fprintf(stderr, " fRec4 %f , ", fRec1[l4]);
+	for (int l5 = 0; (l5 < 2); l5 = (l5 + 1)) fprintf(stderr, " fRec5 %f , ", fRec9[l5]);
+	for (int l6 = 0; (l6 < 2); l6 = (l6 + 1)) fprintf(stderr, " fRec11 %f , ", fRec11[l6]);
+	for (int l7 = 0; (l7 < 3); l7 = (l7 + 1)) fprintf(stderr, " fVec1 %f , ",fVec1[l7]);
+	for (int l8 = 0; (l8 < 3); l8 = (l8 + 1)) fprintf(stderr, " fRec10 %f , ", fRec10[l8]);
+	for (int l9 = 0; (l9 < 2); l9 = (l9 + 1)) fprintf(stderr, " fRec0 %f , ", fRec0[l9]);
+	for (int l10 = 0; (l10 < 2); l10 = (l10 + 1)) fprintf(stderr, " fRec12 %f , ", fRec12[l10]);
+#ifndef _MOD_DEVICE_DUO
+	for (int l1 = 0; (l1 < 3); l1 = (l1 + 1)) fprintf(stderr, " lowpass_fRec1 %f , ",lowpass_fRec1[l1]);
+	for (int l2 = 0; (l2 < 3); l2 = (l2 + 1)) fprintf(stderr, " lowpass_fRec0 %f , ",lowpass_fRec0[l2]);
+#endif    
+}
+
 inline void Dsp::clear_state_f()
 {
+    print_out();
 	for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) iVec0[l0] = 0;
 	for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) fRec7[l1] = 0.0;
 	for (int l2 = 0; (l2 < 2); l2 = (l2 + 1)) fRec5[l2] = 0.0;
@@ -101,9 +121,8 @@ inline void Dsp::clear_state_f()
 	for (int l9 = 0; (l9 < 2); l9 = (l9 + 1)) fRec0[l9] = 0.0;
 	for (int l10 = 0; (l10 < 2); l10 = (l10 + 1)) fRec12[l10] = 0.0;
 #ifndef _MOD_DEVICE_DUO
-	for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) lowpass_fVec0[l0] = 0.0;
-	for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) lowpass_fRec1[l1] = 0.0;
-	for (int l2 = 0; (l2 < 3); l2 = (l2 + 1)) lowpass_fRec0[l2] = 0.0;
+	for (int l0 = 0; (l0 < 3); l0 = (l0 + 1)) lowpass_fRec1[l0] = 0.0;
+	for (int l1 = 0; (l1 < 3); l1 = (l1 + 1)) lowpass_fRec0[l1] = 0.0;
 #endif
 }
 
@@ -134,7 +153,9 @@ void always_inline Dsp::compute(int count, FAUSTFLOAT *input0, FAUSTFLOAT *outpu
 #define fVslider0 (*fVslider0_)
 #define fHslider0 (*fHslider0_)
 #ifndef _MOD_DEVICE_DUO
-	FAUSTFLOAT buf[smp.max_out_count(count)];
+	int upcount = smp.max_out_count(count);
+	FAUSTFLOAT buf[upcount];
+	memset(buf, 0, upcount*sizeof(float));
 	int ReCount = smp.up(count, input0, buf);
 #else
 	if(output0 != input0)
@@ -165,7 +186,7 @@ void always_inline Dsp::compute(int count, FAUSTFLOAT *input0, FAUSTFLOAT *outpu
 		double fTemp6 = (fTemp0 + fRec9[0]);
 		fVec1[0] = fTemp6;
 		fRec10[0] = (0.0 - ((((fRec10[1] * ((fConst1 * ((0.0 - (6.4668229327765205e-10 * fRec11[0])) + -5.0042251356581001e-10)) + 0.00018384980771754501)) + (fRec10[2] * ((fConst0 * (fConst3 + (fConst5 * fRec11[0]))) + 9.1924903858772505e-05))) - (((6.8740380275009003e-06 * fVec1[1]) + (fConst6 * fVec1[2])) + (fConst7 * fTemp6))) / ((fConst0 * (fConst8 + (fConst9 * fRec11[0]))) + 9.1924903858772505e-05)));
-		fRec0[0] = ((fTemp0 + (fRec1[1] + (fRec2 + fRec9[0]))) - double(rumorclip(double((fRec10[0] - fTemp6)))));
+		fRec0[0] = ((fTemp0 + (fRec1[1] + (fRec2 + (2.0 * fRec9[0])))) - double(rumorclip(double((fRec10[0] - fTemp6)))));
 		fRec12[0] = (fSlow1 + (0.99299999999999999 * fRec12[1]));
 		buf[i0] = FAUSTFLOAT((fRec0[0] * fRec12[0]));
 		iVec0[1] = iVec0[0];
@@ -184,13 +205,10 @@ void always_inline Dsp::compute(int count, FAUSTFLOAT *input0, FAUSTFLOAT *outpu
 	}
 #ifndef _MOD_DEVICE_DUO
 	for (int i0 = 0; (i0 < ReCount); i0 = (i0 + 1)) {
-		double lowpass_fTemp0 = double(buf[i0]);
-		lowpass_fVec0[0] = lowpass_fTemp0;
-		lowpass_fRec1[0] = ((lowpass_fTemp0 + lowpass_fVec0[1]) - (0.99999999999999989 * lowpass_fRec1[1]));
-		double lowpass_fTemp1 = (2.0 * lowpass_fRec0[1]);
-		lowpass_fRec0[0] = (lowpass_fRec1[0] - (lowpass_fTemp1 + (0.99999999999999989 * lowpass_fRec0[2])));
-		buf[i0] = float((lowpass_fRec0[2] + (lowpass_fRec0[0] + lowpass_fTemp1)));
-		lowpass_fVec0[1] = lowpass_fVec0[0];
+		lowpass_fRec1[0] = (double(buf[i0]) - ((1.7383024478502873 * lowpass_fRec1[1]) + (0.75793715340193646 * lowpass_fRec1[2])));
+		lowpass_fRec0[0] = (((1.7481198006261118 * lowpass_fRec1[1]) + (0.87405990031305592 * (lowpass_fRec1[0] + lowpass_fRec1[2]))) - ((1.8709501296525741 * lowpass_fRec0[1]) + (0.89208313498371072 * lowpass_fRec0[2])));
+		buf[i0] = FAUSTFLOAT(((1.8815166323181425 * lowpass_fRec0[1]) + (0.94075831615907124 * (lowpass_fRec0[0] + lowpass_fRec0[2]))));
+		lowpass_fRec1[2] = lowpass_fRec1[1];
 		lowpass_fRec1[1] = lowpass_fRec1[0];
 		lowpass_fRec0[2] = lowpass_fRec0[1];
 		lowpass_fRec0[1] = lowpass_fRec0[0];

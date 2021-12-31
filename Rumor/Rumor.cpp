@@ -25,10 +25,83 @@
 #define min(x, y) (((x) < (y)) ? (x) : (y))
 #endif
 
+///////////////////////// DENORMAL PROTECTION WITH SSE /////////////////
+
+#ifdef NOSSE
+#undef __SSE__
+#endif
+
+#ifdef __SSE__
+#include <immintrin.h>
+#ifndef _IMMINTRIN_H_INCLUDED
+#include <fxsrintrin.h>
+#endif
+/* On Intel set FZ (Flush to Zero) and DAZ (Denormals Are Zero)
+   flags to avoid costly denormals */
+#ifdef __SSE3__
+#ifndef _PMMINTRIN_H_INCLUDED
+#include <pmmintrin.h>
+#endif
+#else
+#ifndef _XMMINTRIN_H_INCLUDED
+#include <xmmintrin.h>
+#endif
+#endif //__SSE3__
+
+#endif //__SSE__
 
 ////////////////////////////// PLUG-IN CLASS ///////////////////////////
 
 namespace rumor {
+
+class DenormalProtection
+{
+private:
+#ifdef __SSE__
+  uint32_t  mxcsr_mask;
+  uint32_t  mxcsr;
+  uint32_t  old_mxcsr;
+#endif
+
+public:
+  inline void set_() {
+#if defined (__arm64__) || defined (__aarch64__)
+    asm volatile("mrs %0, fpcr" : "=r" (old_mxcsr));
+    mxcsr = old_mxcsr;
+    asm volatile("msr fpcr, %0" : : "ri" (mxcsr | 1 << 24));
+#elif defined (__SSE__)
+    old_mxcsr = _mm_getcsr();
+    mxcsr = old_mxcsr;
+    _mm_setcsr((mxcsr | _MM_DENORMALS_ZERO_MASK | _MM_FLUSH_ZERO_MASK) & mxcsr_mask);
+#endif
+  };
+  inline void reset_() {
+#if defined (__arm64__) || defined (__aarch64__)
+    asm volatile("msr fpcr, %0" : : "ri" (old_mxcsr));
+#elif defined (__SSE__)
+    _mm_setcsr(old_mxcsr);
+#endif
+  };
+
+  inline DenormalProtection()
+  {
+#ifdef __SSE__
+    mxcsr_mask = 0xffbf; // Default MXCSR mask
+    mxcsr      = 0;
+#if defined(__x86_64__) || defined(_M_X64)
+    uint8_t fxsave[512] __attribute__ ((aligned (16))); // Structure for storing FPU state with FXSAVE command
+
+    memset(fxsave, 0, sizeof(fxsave));
+    __builtin_ia32_fxsave(&fxsave);
+    uint32_t mask = *(reinterpret_cast<uint32_t *>(&fxsave[0x1c])); // Obtain the MXCSR mask from FXSAVE structure
+    if (mask != 0)
+        mxcsr_mask = mask;
+#endif
+#endif
+  };
+
+  inline ~DenormalProtection() {};
+};
 
 class Xrumor
 {
@@ -46,6 +119,7 @@ private:
     float ramp_up_step;
     float ramp_down_step;
     bool bypassed;
+    DenormalProtection MXCSR;
 
     // private functions
     inline void run_dsp_(uint32_t n_samples);
@@ -137,6 +211,7 @@ void Xrumor::deactivate_f()
 void Xrumor::run_dsp_(uint32_t n_samples)
 {
     if(n_samples<1) return;
+    MXCSR.set_();
 
     // do inplace processing on default
     if(output0 != input0)
@@ -199,6 +274,7 @@ void Xrumor::run_dsp_(uint32_t n_samples)
             ramp_down = ramp_up;
         }
     }
+    MXCSR.reset_();
 }
 
 void Xrumor::connect_all__ports(uint32_t port, void* data)

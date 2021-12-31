@@ -1,5 +1,6 @@
 
 
+	UNAME := $(shell uname)
 	# check if user is root
 	user = $(shell whoami)
 	ifeq ($(user),root)
@@ -8,6 +9,28 @@
 	INSTALL_DIR = ~/.lv2
 	endif
 
+	# check CPU and supported optimization flags
+	ifeq ($(UNAME), Linux)
+		ifneq ($(shell cat /proc/cpuinfo | grep sse3 ) , )
+			SSE_CFLAGS = -msse3 -mfpmath=sse -mfxsr
+		else ifneq ($(shell cat /proc/cpuinfo | grep sse2 ) , )
+			SSE_CFLAGS = -msse2 -mfpmath=sse -mfxsr
+		else ifneq ($(shell cat /proc/cpuinfo | grep sse ) , )
+			SSE_CFLAGS = -msse -mfpmath=sse -mfxsr
+			else ifneq ($(shell cat /proc/cpuinfo | grep ARM ) , )
+			ifneq ($(shell cat /proc/cpuinfo | grep ARMv7 ) , )
+				ifneq ($(shell cat /proc/cpuinfo | grep vfpd32 ) , )
+					SSE_CFLAGS = -march=armv7-a -mfpu=vfpv3 
+				else ifneq ($(shell cat /proc/cpuinfo | grep vfpv3 ) , )
+					SSE_CFLAGS = -march=armv7-a -mfpu=vfpv3
+				endif
+			else
+				ARMCPU = "YES"
+			endif
+		else
+			SSE_CFLAGS =
+		endif
+	endif
 
 	# check LD version
 	ifneq ($(shell xxd --version 2>&1 | head -n 1 | grep xxd),)
@@ -45,10 +68,11 @@
 	-Wl,-Bdynamic `pkg-config --cflags --libs cairo x11` 
 	LDFLAGS += -fvisibility=hidden -shared -lm -fPIC \
 	-Wl,-z,noexecstack -Wl,--no-undefined -Wl,--gc-sections
-	CXXFLAGS += -fPIC -DPIC -O2 -Wall -funroll-loops \
+	CXXFLAGS += -fPIC -DPIC -O3 -Wall -floop-parallelize-all \
+	-ftree-loop-distribution -floop-interchange -ftree-vectorize \
 	-I./zita-resampler-1.1.0 -I./zita-resampler-1.1.0/zita-resampler \
 	-fomit-frame-pointer -fstrength-reduce -fstack-protector -fvisibility=hidden \
-	-fdata-sections -Wl,--gc-sections -Wl,--exclude-libs,ALL
+	-fdata-sections -Wl,--gc-sections -Wl,--exclude-libs,ALL $(SSE_CFLAGS)
 	SLP_LDFLAGS += -fvisibility=hidden -Wl,-Bstatic `pkg-config --cflags --libs xputty` \
 	-Wl,-Bdynamic `pkg-config --cflags --libs cairo x11 lilv-0` \
 	-shared -lm -fPIC -Wl,-z,noexecstack -Wl,--no-undefined -Wl,--gc-sections
