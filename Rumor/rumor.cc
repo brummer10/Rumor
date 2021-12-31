@@ -108,7 +108,6 @@ inline void Dsp::print_out()
 
 inline void Dsp::clear_state_f()
 {
-    print_out();
 	for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) iVec0[l0] = 0;
 	for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) fRec7[l1] = 0.0;
 	for (int l2 = 0; (l2 < 2); l2 = (l2 + 1)) fRec5[l2] = 0.0;
