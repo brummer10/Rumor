@@ -57,7 +57,7 @@ namespace rumor {
 class DenormalProtection
 {
 private:
-#ifdef __SSE__
+#if defined (__SSE__) || (__arm64__) || defined (__aarch64__)
   uint32_t  mxcsr_mask;
   uint32_t  mxcsr;
   uint32_t  old_mxcsr;
