@@ -8,6 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: remove tag
+      uses: dev-drprasad/delete-tag-and-release@v0.2.0
+      with:
+        delete_release: false
+        tag_name: Latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - uses: actions/checkout@v1
     - name: submodule update
       run: git submodule update --init
@@ -21,14 +29,6 @@ jobs:
         cd /home/runner/work/Rumor/Rumor/Rumor
         zip -r /home/runner/work/Rumor/Rumor/Rumor/Rumor.lv2.zip ./Rumor.lv2
 
-    - name: remove tag
-      uses: dev-drprasad/delete-tag-and-release@v0.2.0
-      with:
-        delete_release: false
-        tag_name: Latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
