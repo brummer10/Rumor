@@ -72,7 +72,6 @@ public:
 	void connect(uint32_t port,void* data);
 	void del_instance(Dsp *p);
 	void clear_state_f();
-	void print_out();
 	void init(uint32_t sample_rate);
 	void compute(int count, FAUSTFLOAT *input0, FAUSTFLOAT *output0);
 	Dsp();
@@ -85,25 +84,6 @@ Dsp::Dsp() {
 }
 
 Dsp::~Dsp() {
-}
-
-inline void Dsp::print_out()
-{
-	for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) fprintf(stderr, " iVec0 %i , ", iVec0[l0]);
-	for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) fprintf(stderr, " fRec7 %f , ", fRec7[l1]);
-	for (int l2 = 0; (l2 < 2); l2 = (l2 + 1)) fprintf(stderr, " fRec5 %f , ", fRec5[l2]);
-	for (int l3 = 0; (l3 < 2); l3 = (l3 + 1)) fprintf(stderr, " fRec3 %f , ", fRec3[l3]);
-	for (int l4 = 0; (l4 < 2); l4 = (l4 + 1)) fprintf(stderr, " fRec4 %f , ", fRec1[l4]);
-	for (int l5 = 0; (l5 < 2); l5 = (l5 + 1)) fprintf(stderr, " fRec5 %f , ", fRec9[l5]);
-	for (int l6 = 0; (l6 < 2); l6 = (l6 + 1)) fprintf(stderr, " fRec11 %f , ", fRec11[l6]);
-	for (int l7 = 0; (l7 < 3); l7 = (l7 + 1)) fprintf(stderr, " fVec1 %f , ",fVec1[l7]);
-	for (int l8 = 0; (l8 < 3); l8 = (l8 + 1)) fprintf(stderr, " fRec10 %f , ", fRec10[l8]);
-	for (int l9 = 0; (l9 < 2); l9 = (l9 + 1)) fprintf(stderr, " fRec0 %f , ", fRec0[l9]);
-	for (int l10 = 0; (l10 < 2); l10 = (l10 + 1)) fprintf(stderr, " fRec12 %f , ", fRec12[l10]);
-#ifndef _MOD_DEVICE_DUO
-	for (int l1 = 0; (l1 < 3); l1 = (l1 + 1)) fprintf(stderr, " lowpass_fRec1 %f , ",lowpass_fRec1[l1]);
-	for (int l2 = 0; (l2 < 3); l2 = (l2 + 1)) fprintf(stderr, " lowpass_fRec0 %f , ",lowpass_fRec0[l2]);
-#endif    
 }
 
 inline void Dsp::clear_state_f()
